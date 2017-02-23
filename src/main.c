@@ -140,7 +140,7 @@ int main(int argc, char **argv)
 
 	env = env_init();
 
-	debugfd = open("/dev/ttys008", O_WRONLY);
+	debugfd = open("/dev/ttys002", O_WRONLY);
 
 	if (argc == 1)
 	{

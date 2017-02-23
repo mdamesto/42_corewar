@@ -30,37 +30,28 @@ static void   my_init_color()
     init_pair(13, COLOR_BLACK, COLOR_WHITE);
 }
 
-// ATT_ON AND ATT_OFF CAN BE ONE FCT (USING *FCT)  ----------------- TODO
-static void	att_on(t_env *env, t_display *display)
+static void	handle_att(t_env *env, t_display *display, int use)
 {
-	if (display->ispc)
-	{
-		if (display->value > 0 && display->value < 17)
-			wattron(env->w_main, COLOR_PAIR(display->champion + 4));
-		else
-			wattron(env->w_main, COLOR_PAIR(display->champion + 8));
-	}
-	else if (display->champion)
-		wattron(env->w_main, COLOR_PAIR(display->champion));
-	if (display->recent_display)
-		wattroff(env->w_main, A_BOLD);
-}
+	int (*fct_1)(WINDOW *, int);
+	int (*fct_2)(WINDOW *, int);
 
-static void	att_off(t_env *env, t_display *display)
-{
+	fct_1 = use ? wattron : wattroff;
+	fct_2 = use ? wattroff : wattron; 
+
 	if (display->ispc)
 	{
 		if (display->value > 0 && display->value < 17)
-			wattroff(env->w_main, COLOR_PAIR(display->champion + 4));
+			fct_1(env->w_main, COLOR_PAIR(display->champion + 4));
 		else
-			wattroff(env->w_main, COLOR_PAIR(display->champion + 8));
+			fct_1(env->w_main, COLOR_PAIR(display->champion + 8));
 	}
 	else if (display->champion)
-		wattroff(env->w_main, COLOR_PAIR(display->champion));
+		fct_1(env->w_main, COLOR_PAIR(display->champion));
 	if (display->recent_display)
 	{
-		wattron(env->w_main, A_BOLD);
-		display->recent_display--;
+		fct_2(env->w_main, A_BOLD);
+		if (!use)
+			display->recent_display--;
 	}
 }
 
@@ -74,6 +65,7 @@ void init_display(t_env *env)
     //NCURSES OPTION/CONFIG
     cbreak();
     noecho();
+    nodelay(stdscr, TRUE);
     scrollok(stdscr, TRUE);
 
     //INIT COLOR AND SUBWINDOWS and STORE IN ENV
@@ -85,32 +77,75 @@ void init_display(t_env *env)
     env->w_main = main;
     env->w_menu = menu;
 	wattron(env->w_main, A_BOLD);
-
-
-	ft_putstr_fd("succesinit\n", debugfd);
 }
 
 void 	display(t_display **display, t_env *env)
 {
-	ft_putstr_fd("in display iter\n", debugfd);
+
 	const char hex[] = "0123456789abcdef";
 	char str[3];
 	int i;
+	char ch;
 
 	str[2] = '\0';
 	i = -1;
 	while(++i < 4096)
 	{
-		att_on(env, display[i]);
+		handle_att(env, display[i], 1);
 		str[0] = hex[display[i]->value / 16];
 		str[1] = hex[display[i]->value % 16];
 		mvwprintw(env->w_main, LINE(i), COL(i), str);
-		att_off(env, display[i]);
+		handle_att(env, display[i], 0);
 		mvwprintw(env->w_main, LINE(i), COL(i) + 2, " ");
 	}
 	wrefresh(env->w_main);
-//	usleep(20000);
-//	getch();
+
+	/*if ((ch = getch()) == ' ')
+	{
+		ft_putstr_fd("PAUSED\n", debugfd);
+		ungetch(ch);
+		while ((ch = getch()) != ' ')
+		{
+			if (ch == 67)
+				ft_putstr_fd("STEP BY STEP\n", debugfd);
+		}
+	}*/
+
+	/*ft_putstr_fd("KEYBOARD NOT HITTED\n", debugfd);
+	ch = getch();
+	if (ch == ERR)
+		ft_putstr_fd("CH = ERR\n", debugfd);
+	*/
+
+	if ((ch = getch()) != ERR)
+	{
+		/*ft_putstr_fd("KEYBOARD HITTED\n", debugfd);
+		ft_putstr_fd("CH = \'", debugfd);
+		write(debugfd, &ch, 1);
+		ft_putstr_fd("\'.\n", debugfd);*/
+
+		if (ch == 65)
+			ft_putstr_fd("UP SPEED\n", debugfd);
+		else if (ch == 66)
+			ft_putstr_fd("DOWN SPEED\n", debugfd);
+		else if (ch == ' ' || ch == 67)
+		{
+			if (ch == ' ')
+				ft_putstr_fd("PAUSED....\n", debugfd);
+			if (ch == 67)
+				ft_putstr_fd("STEP BY STEP\n", debugfd);
+			while ((ch = getch()) != ' ')
+			{
+				if (ch == 65)
+					ft_putstr_fd("UP SPEED\n", debugfd);
+				else if (ch == 66)
+					ft_putstr_fd("DOWN SPEED\n", debugfd);
+				else if (ch == 67)
+					ft_putstr_fd("STEP BY STEP\n", debugfd);
+			}
+			ft_putstr_fd("UNPAUSED!\n", debugfd);
+		}
+	}
 }
 
 void	end_display(t_env * env)
