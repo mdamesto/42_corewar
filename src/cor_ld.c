@@ -43,10 +43,10 @@ int		cor_ld(t_env *env, int param, int pc)
 	else
 		return ((CUR_PROC->pc + 1) % MEM_SIZE);
 
-	//apply load
+	//apply ld
 	CUR_PROC->reg[arg2 - 1] = swap_bytes(arg1);
 
-	//apply carry
+	//set carry
 	if (!arg1)
 		CUR_PROC->carry = 1;
 	else

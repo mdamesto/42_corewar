@@ -75,8 +75,8 @@ int		cor_st(t_env *env, int param, int pc)
 	else
 		return ((CUR_PROC->pc + 1) % MEM_SIZE);
 
-	//apply store
-	if (((param & 48) >> 4 ) == IND_CODE)
+	//apply st
+	if (((param & 48) >> 4) == IND_CODE)
 		apply_st_zone(env, arg1, arg2);
 	else
 		CUR_PROC->reg[arg2 - 1] = CUR_PROC->reg[arg1 - 1];

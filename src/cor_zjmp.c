@@ -14,14 +14,25 @@
 
 int		cor_zjmp(t_env *env, int pc)
 {
-	signed short arg1;
+	int arg1;
 
+	//set wait time
 	CUR_PROC->wait_time = 20;
-	arg1 = get_direct_short(ZONE, pc);
-	pc = (pc + 2) % MEM_SIZE;
+
+	//get arg1;
+	if (((param & 192) >> 6) == DIR_CODE)
+	{
+		arg1 = get_direct_short(ZONE, pc);
+		pc = (pc + 2) % MEM_SIZE;
+	}
+	else
+		return ((CUR_PROC->pc + 1) % MEM_SIZE);
+
+	//apply zjmp
 	if (!CUR_PROC->carry)
 		return (pc);
-	pc = (CUR_PROC->pc + (arg1 % IDX_MOD)) % MEM_SIZE;
+	else
+		pc = MODFIX(CUR_PROC->pc + (arg1 % IDX_MOD), MEM_SIZE);
 
 	return (pc);
 }

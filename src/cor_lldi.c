@@ -18,6 +18,7 @@ int		cor_lldi(t_env *env, int param, int pc)
 	int arg2 = 0;
 	int arg3 = 0;
 
+	//set wait time
 	CUR_PROC->wait_time = 50;
 
 	//get arg1
@@ -28,7 +29,7 @@ int		cor_lldi(t_env *env, int param, int pc)
 	}
 	else if (((param & 192) >> 6) == IND_CODE)
 	{
-		arg1 = get_indirect(ZONE, pc);
+		arg1 = get_indirect_idx(ZONE, pc, CUR_PROC->pc);
 		pc = (pc + 2) % MEM_SIZE;
 	}
 	else if (((param & 192) >> 6) == DIR_CODE)
@@ -36,6 +37,8 @@ int		cor_lldi(t_env *env, int param, int pc)
 		arg1 = get_direct_short(ZONE, pc);
 		pc = (pc + 2) % MEM_SIZE;
 	}
+	else
+		return ((CUR_PROC->pc + 1) % MEM_SIZE);
 
 	//get arg2
 	if (((param & 48) >> 4) == REG_CODE)
@@ -48,13 +51,21 @@ int		cor_lldi(t_env *env, int param, int pc)
 		arg2 = get_direct_short(ZONE, pc);
 		pc = (pc + 2) % MEM_SIZE;
 	}
+	else
+		return ((CUR_PROC->pc + 1) % MEM_SIZE);
 
-	//get arg3 & finish the job
+	//get arg3
 	if (((param & 12) >> 2) == REG_CODE)
 	{
-		arg3 = get_direct(ZONE, (CUR_PROC->pc + (arg1 + arg2) + MEM_SIZE) % MEM_SIZE);
-		CUR_PROC->reg[ZONE[pc] - 1] = swap_bytes(arg3);
+		arg3 = ZONE[pc];
 		pc = (pc + 1) % MEM_SIZE;
 	}
+	else
+		return ((CUR_PROC->pc + 1) % MEM_SIZE);
+
+	//apply lldi
+	int pos = MODFIX(CUR_PROC->pc + arg1 + arg2, MEM_SIZE);
+	CUR_PROC->reg[arg3 - 1] = swap_bytes(get_direct(ZONE, pos));
+
 	return (pc);
 }

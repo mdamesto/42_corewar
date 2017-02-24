@@ -16,14 +16,23 @@ int		cor_aff(t_env *env, int param, int pc)
 {
 	int arg1;
 	unsigned char buf;
+	(void)param;
 
+	//set wait time
 	CUR_PROC->wait_time = 2;
 
-	arg1 = CUR_PROC->reg[ZONE[pc]];
+	//get arg1
+	if (((param & 192) >> 6) == DIR_CODE)
+	{
+		arg1 = CUR_PROC->reg[ZONE[pc] - 1];
+		pc = (pc + 1) % MEM_SIZE;
+	}
+	else
+		return ((CUR_PROC->pc + 1) % MEM_SIZE);
 
-	buf = arg1 % 256;
+	//apply aff
+	buf = MODFIX(arg1 % 256, 256);
 	write(1, &buf, 1);
-	pc = (pc + 1) % MEM_SIZE;
-	(void)param;
+
 	return (pc);
 }

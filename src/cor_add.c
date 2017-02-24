@@ -50,7 +50,7 @@ int		cor_add(t_env *env, int param, int pc)
 	else
 		return ((CUR_PROC->pc + 1) % MEM_SIZE);
 
-	//apply and
+	//apply add
 	value = swap_bytes(swap_bytes(CUR_PROC->reg[arg1 - 1]) + swap_bytes(CUR_PROC->reg[arg2 - 1]));
 	CUR_PROC->reg[arg3 - 1] = swap_bytes(value);
 

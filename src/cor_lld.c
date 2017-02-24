@@ -16,26 +16,38 @@ int		cor_lld(t_env *env, int param, int pc)
 {
 	int arg1;
 	int arg2;
-	int value;
 
+	//set wait time
 	CUR_PROC->wait_time = 10;
 
+	//get arg1
 	if (((param & 192) >> 6) == IND_CODE)
-		arg1 = get_indirect(ZONE, pc);
-	else
 	{
-		arg1 = get_direct(ZONE, pc);
+		arg1 = get_indirect(ZONE, pc);
 		pc = (pc + 2) % MEM_SIZE;
 	}
-	pc = (pc + 2) % MEM_SIZE;
+	else if (((param & 192) >> 6) == DIR_CODE)
+	{
+		arg1 = get_direct(ZONE, pc);
+		pc = (pc + 4) % MEM_SIZE;
+	}
+	else
+		return ((CUR_PROC->pc + 1) % MEM_SIZE);
 
-	arg2 = ZONE[pc];
-	pc = (pc + 1) % MEM_SIZE;
+	//get arg2
+	if (((param & 48) >> 4) == REG_CODE)
+	{
+		arg2 = ZONE[pc];
+		pc = (pc + 1) % MEM_SIZE;
+	}
+	else
+		return ((CUR_PROC->pc + 1) % MEM_SIZE);
 
-	value = swap_bytes(arg1);
-	CUR_PROC->reg[arg2 - 1] = value;
+	//apply lld
+	CUR_PROC->reg[arg2 - 1] = swap_bytes(arg1);
 
-	if (!value)
+	//set carry
+	if (!arg1)
 		CUR_PROC->carry = 1;
 	else
 		CUR_PROC->carry = 0;
