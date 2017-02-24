@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/14 17:44:21 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/02/23 18:30:45 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/02/24 18:54:01 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,5 +52,7 @@ int		cor_ld(t_env *env, int param, int pc)
 	//set wait time
 	CUR_PROC->wait_time = 5;
 
+	if (DEBUG)
+		ft_printf("P%4d | ld %d r%d\n", CUR_PROC->id + 1, arg1, arg2);
 	return (pc);
 }

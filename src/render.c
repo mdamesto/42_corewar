@@ -109,8 +109,6 @@ void 	display(t_display **display, t_env *env)
 		mvwprintw(env->w_main, LINE(i), COL(i) + 2, " ");
 	}
 	wrefresh(env->w_main);
-//	usleep(20000);
-//	getch();
 }
 
 void	end_display(t_env * env)

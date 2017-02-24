@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/14 18:20:20 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/02/23 18:48:40 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/02/24 18:55:21 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int		cor_add(t_env *env, int param, int pc)
 
 	//apply add
 	value = swap_bytes(swap_bytes(CUR_PROC->reg[arg1 - 1]) + swap_bytes(CUR_PROC->reg[arg2 - 1]));
-	CUR_PROC->reg[arg3 - 1] = swap_bytes(value);
+	CUR_PROC->reg[arg3 - 1] = value;
 
 	//set carry
 	if (!value)
@@ -59,5 +59,7 @@ int		cor_add(t_env *env, int param, int pc)
 	//set wait time
 	CUR_PROC->wait_time = 10;
 
+	if (DEBUG)
+		ft_printf("P%4d | add r%d r%d r%d\n", CUR_PROC->id + 1, arg1, arg2, arg3);
 	return (pc);
 }

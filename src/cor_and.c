@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/14 18:33:02 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/02/22 21:19:24 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/02/24 15:44:33 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int		cor_and(t_env *env, int param, int pc)
 		pc = (pc + 4) % MEM_SIZE;
 	}
 	else
-		return ((CUR_PROC->pc + 1) % MEM_SIZE)
+		return ((CUR_PROC->pc + 1) % MEM_SIZE);
 
 	//get arg2
 	if (((param & 48) >> 4) == REG_CODE)
@@ -73,7 +73,7 @@ int		cor_and(t_env *env, int param, int pc)
 		CUR_PROC->carry = 1;
 	else
 		CUR_PROC->carry = 0;
-	
+
 
 	//set wait time
 	CUR_PROC->wait_time = 6;

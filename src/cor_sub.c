@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/14 18:29:29 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/02/20 14:13:08 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/02/24 18:55:37 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int		cor_sub(t_env *env, int param, int pc)
 
 	//apply sub
 	value = swap_bytes(swap_bytes(CUR_PROC->reg[arg1 - 1]) - swap_bytes(CUR_PROC->reg[arg2 - 1]));
-	CUR_PROC->reg[arg3 - 1] = swap_bytes(value);
+	CUR_PROC->reg[arg3 - 1] = value;
 
 	//set carry
 	if (!value)

@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 18:54:15 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/02/23 19:27:55 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/02/24 19:17:47 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@
 # define CUR_PROC env->process_list[env->arena->current_process]
 # define ZONE env->arena->zone
 # define DISPLAY 1
-# define MODFIX(x, y) (((x) % (y)) < 0) ? ((x) % (y)) + (y) : (x) % (y);
+# define MODFIX(x, y) (((x) % (y)) < 0) ? ((x) % (y)) + (y) : (x) % (y)
+# define DEBUG 0
 
 extern int debugfd;
 
@@ -83,7 +84,7 @@ t_display	*display_init();
 int			arg_parser(int ac, char **av, t_env *env);
 
 int			get_direct(unsigned char *zone, int pc);
-int			get_indirect(unsigned char *zone, int pc);
+int			get_indirect(unsigned char *zone, int pc, int refpc);
 short		get_direct_short(unsigned char *zone, int pc);
 int			get_indirect_idx(unsigned char *zone, int pc, int refpc);
 

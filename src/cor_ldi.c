@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/14 19:01:06 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/02/22 21:20:27 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/02/24 18:55:13 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int		cor_ldi(t_env *env, int param, int pc)
 	int arg1 = 0;
 	int arg2 = 0;
 	int arg3 = 0;
+
 
 	//get arg1
 	if (((param & 192) >> 6) == REG_CODE)
@@ -66,6 +67,12 @@ int		cor_ldi(t_env *env, int param, int pc)
 
 	//set wait time
 	CUR_PROC->wait_time = 25;
+
+	if (DEBUG)
+	{
+		ft_printf("P%4d | ldi %d %d r%d\n", CUR_PROC->id, arg1, arg2, arg3);
+		ft_printf("       | -> load from %d + %d = %d\n", arg1, arg2, arg1+arg2);
+	}
 
 	return (pc);
 }

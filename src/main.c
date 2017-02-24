@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 16:54:36 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/02/23 19:14:37 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/02/24 19:14:05 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,7 @@ void	process_turn(t_env *env)
 {
 	int opcode = 0;
 	int	param = 0;
+	int curcycle = 1;
 	int pc; // opcode pour gérer l'opération
 
 	while (1)
@@ -131,6 +132,9 @@ void	process_turn(t_env *env)
 			env->arena->current_process--;
 		}
 		display(env->display, env);
+		curcycle++;
+		if (DEBUG && curcycle >= 10000)
+			exit(0);
 	}
 }
 

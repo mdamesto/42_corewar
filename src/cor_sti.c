@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/14 19:34:37 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/02/23 19:32:29 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/02/24 19:07:08 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,12 @@ int		cor_sti(t_env *env, int param, int pc)
 	int arg1 = 0;
 	int arg2 = 0;
 	int arg3 = 0;
+	int debugstuff = 0;
 
 	//get arg1
 	if (((param & 192) >> 6) == REG_CODE)
 	{
+		debugstuff = ZONE[pc];
 		arg1 = swap_bytes(CUR_PROC->reg[ZONE[pc] - 1]);
 		pc = (pc + 1) % MEM_SIZE;
 	}
@@ -85,5 +87,11 @@ int		cor_sti(t_env *env, int param, int pc)
 
 	//set wait time
 	CUR_PROC->wait_time = 25;
+
+	if (DEBUG)
+	{
+		ft_printf("P%4d | sti r%d %d %d\n", CUR_PROC->id + 1, debugstuff, arg2, arg3);
+		ft_printf("       | -> store to %d + %d = %d (with pc and mod %d)\n", arg2, arg3, arg2 + arg3, pos);
+	}
 	return (pc);
 }

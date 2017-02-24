@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/14 20:14:27 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/02/20 18:58:59 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/02/24 15:49:45 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int		cor_lld(t_env *env, int param, int pc)
 	//get arg1
 	if (((param & 192) >> 6) == IND_CODE)
 	{
-		arg1 = get_indirect(ZONE, pc);
+		arg1 = get_indirect(ZONE, pc, CUR_PROC->pc);
 		pc = (pc + 2) % MEM_SIZE;
 	}
 	else if (((param & 192) >> 6) == DIR_CODE)
@@ -51,6 +51,6 @@ int		cor_lld(t_env *env, int param, int pc)
 
 	//set wait time
 	CUR_PROC->wait_time = 10;
-	
+
 	return (pc);
 }
