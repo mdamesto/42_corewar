@@ -105,7 +105,7 @@ void	process_turn(t_env *env)
 {
 	int opcode = 0;
 	int	param = 0;
-	int pc;
+	int pc; // opcode pour gérer l'opération
 
 	while (1)
 	{
@@ -116,16 +116,16 @@ void	process_turn(t_env *env)
 				CUR_PROC->wait_time--;
 			if (!CUR_PROC->wait_time)
 			{
-				pc = CUR_PROC->pc;
+				pc = CUR_PROC->pc; // buffer set, on l'utilise pour l'opération
 				opcode = ZONE[pc];
 				pc = (pc + 1) % MEM_SIZE;
-				if (!(opcode == 1 || opcode == 9 || opcode == 12 || opcode == 15))
+				if (!(opcode == 1 || opcode == 9 || opcode == 12 || opcode == 15)) // opé sans params
 				{
 					param = ZONE[pc % MEM_SIZE];
 					pc = (pc + 1) % MEM_SIZE;
 				}
 				env->display[CUR_PROC->pc]->ispc = 0;
-				CUR_PROC->pc = operation(env, opcode, param, pc);
+				CUR_PROC->pc = operation(env, opcode, param, pc); // execute l'opération, l'opé retourne le buffer pointé sur la prochaine opé
 				env->display[CUR_PROC->pc]->ispc = 1;
 			}
 			env->arena->current_process--;
