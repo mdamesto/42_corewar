@@ -29,9 +29,6 @@ int		cor_lfork(t_env *env, int pc)
 {
 	int arg1;
 
-	//set wait time
-	CUR_PROC->wait_time = 1000;
-
 	//get arg1
 	if (((param & 192) >> 6) == DIR_CODE)
 	{
@@ -48,6 +45,9 @@ int		cor_lfork(t_env *env, int pc)
 
 	//update display
 	env->display[MODFIX(CUR_PROC->pc + arg1, MEM_SIZE)]->ispc = 1;
+	
+	//set wait time
+	CUR_PROC->wait_time = 1000;
 	
 	return (pc);
 }

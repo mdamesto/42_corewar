@@ -18,9 +18,6 @@ int		cor_xor(t_env *env, int param, int pc)
 	int arg2;
 	int arg3;
 
-	//set wait time
-	CUR_PROC->wait_time = 6;
-
 	//get arg1
 	if (((param & 192) >> 6) == REG_CODE)
 	{
@@ -76,6 +73,9 @@ int		cor_xor(t_env *env, int param, int pc)
 		CUR_PROC->carry = 1;
 	else
 		CUR_PROC->carry = 0;
+	
+	//set wait time
+	CUR_PROC->wait_time = 6;
 	
 	return (pc);
 }

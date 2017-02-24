@@ -18,9 +18,6 @@ int		cor_aff(t_env *env, int param, int pc)
 	unsigned char buf;
 	(void)param;
 
-	//set wait time
-	CUR_PROC->wait_time = 2;
-
 	//get arg1
 	if (((param & 192) >> 6) == DIR_CODE)
 	{
@@ -33,6 +30,9 @@ int		cor_aff(t_env *env, int param, int pc)
 	//apply aff
 	buf = MODFIX(arg1 % 256, 256);
 	write(1, &buf, 1);
+
+	//set wait time
+	CUR_PROC->wait_time = 2;
 
 	return (pc);
 }

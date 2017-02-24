@@ -18,10 +18,6 @@ int		cor_sub(t_env *env, int param, int pc)
 	int arg2;
 	int arg3;
 	int value;
-	(void)param;
-
-	//set wait time
-	CUR_PROC->wait_time = 10;
 
 	//get arg1
 	if (((param & 192) >> 6) == REG_CODE)
@@ -59,6 +55,9 @@ int		cor_sub(t_env *env, int param, int pc)
 		CUR_PROC->carry = 1;
 	else
 		CUR_PROC->carry = 0;
+
+	//set wait time
+	CUR_PROC->wait_time = 10;
 
 	return (pc);
 }

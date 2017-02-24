@@ -17,9 +17,6 @@ int		cor_ld(t_env *env, int param, int pc)
 	int arg1;
 	int arg2;
 
-	//set wait time
-	CUR_PROC->wait_time = 5;
-
 	//get arg1
 	if (((param & 192) >> 6) == IND_CODE)
 	{
@@ -51,6 +48,9 @@ int		cor_ld(t_env *env, int param, int pc)
 		CUR_PROC->carry = 1;
 	else
 		CUR_PROC->carry = 0;
+
+	//set wait time
+	CUR_PROC->wait_time = 5;
 
 	return (pc);
 }

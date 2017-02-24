@@ -18,9 +18,6 @@ int		cor_sti(t_env *env, int param, int pc)
 	int arg2 = 0;
 	int arg3 = 0;
 
-	//set wait time
-	CUR_PROC->wait_time = 25;
-
 	//get arg1
 	if (((param & 192) >> 6) == REG_CODE)
 	{
@@ -86,5 +83,7 @@ int		cor_sti(t_env *env, int param, int pc)
 	env->display[(pos + 2) % MEM_SIZE]->recent_display = 10;
 	env->display[(pos + 3) % MEM_SIZE]->recent_display = 10;
 
+	//set wait time
+	CUR_PROC->wait_time = 25;
 	return (pc);
 }

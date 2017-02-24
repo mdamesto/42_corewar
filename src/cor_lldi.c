@@ -18,9 +18,6 @@ int		cor_lldi(t_env *env, int param, int pc)
 	int arg2 = 0;
 	int arg3 = 0;
 
-	//set wait time
-	CUR_PROC->wait_time = 50;
-
 	//get arg1
 	if (((param & 192) >> 6) == REG_CODE)
 	{
@@ -66,6 +63,9 @@ int		cor_lldi(t_env *env, int param, int pc)
 	//apply lldi
 	int pos = MODFIX(CUR_PROC->pc + arg1 + arg2, MEM_SIZE);
 	CUR_PROC->reg[arg3 - 1] = swap_bytes(get_direct(ZONE, pos));
+
+	//set wait time
+	CUR_PROC->wait_time = 50;
 
 	return (pc);
 }

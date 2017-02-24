@@ -16,15 +16,15 @@ int		cor_live(t_env *env, int pc)
 {
 	int arg1;
 
-	//set wait time
-	CUR_PROC->wait_time = 10;
-
 	//get arg1
 	arg1 = get_direct(ZONE, pc);
 	pc = (pc + 4) % MEM_SIZE;
 
 	//apply live
 	/* allan add livecheck */
+
+	//set wait time
+	CUR_PROC->wait_time = 10;
 
 	return (pc);
 }

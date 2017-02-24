@@ -41,16 +41,12 @@ static void	apply_st_zone(t_env *env, int arg1, int arg2)
 	env->display[(position + 1) % MEM_SIZE]->recent_display = 10;
 	env->display[(position + 2) % MEM_SIZE]->recent_display = 10;
 	env->display[(position + 3) % MEM_SIZE]->recent_display = 10;
-
 }
 
 int		cor_st(t_env *env, int param, int pc)
 {
 	int arg1;
 	int arg2;
-
-	//set wait time
-	CUR_PROC->wait_time = 5;
 
 	//get arg1
 	if (((param & 192) >> 6) == REG_CODE)
@@ -80,6 +76,9 @@ int		cor_st(t_env *env, int param, int pc)
 		apply_st_zone(env, arg1, arg2);
 	else
 		CUR_PROC->reg[arg2 - 1] = CUR_PROC->reg[arg1 - 1];
+
+	//set wait time
+	CUR_PROC->wait_time = 5;
 
 	return (pc);
 }

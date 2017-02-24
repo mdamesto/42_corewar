@@ -16,9 +16,6 @@ int		cor_zjmp(t_env *env, int pc)
 {
 	int arg1;
 
-	//set wait time
-	CUR_PROC->wait_time = 20;
-
 	//get arg1;
 	if (((param & 192) >> 6) == DIR_CODE)
 	{
@@ -34,5 +31,8 @@ int		cor_zjmp(t_env *env, int pc)
 	else
 		pc = MODFIX(CUR_PROC->pc + (arg1 % IDX_MOD), MEM_SIZE);
 
+	//set wait time
+	CUR_PROC->wait_time = 20;
+	
 	return (pc);
 }
