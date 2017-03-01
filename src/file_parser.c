@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/10 17:19:28 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/02/13 14:08:35 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/01 10:16:16 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ static t_player		*file_parser(int fd)
 		printf("\nerror instructions count : %d vs %d\n", i, bufint);
 		return (NULL);
 	}
+	free(buf);
 	return (player);
 }
 

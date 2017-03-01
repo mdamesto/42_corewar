@@ -92,7 +92,6 @@ void init_display(t_env *env)
 
 void 	display(t_display **display, t_env *env)
 {
-	ft_putstr_fd("in display iter\n", debugfd);
 	const char hex[] = "0123456789abcdef";
 	char str[3];
 	int i;

@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 16:54:36 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/02/24 19:14:05 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/01 12:24:38 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,11 +101,49 @@ int		operation(t_env *env, int opcode, int param, int pc)
 	return (pc);
 }
 
+void	live_check(t_env *env)
+{
+	int i = 0;
+	int alive = env->arena->player_amount;
+
+	while (env->player_list[i])
+	{
+		if (!env->player_list[i]->isalive)
+			alive--;
+		i++;
+	}
+	i = 0;
+	if (!alive)
+	{
+		ft_printf("tout les joueurs sont morts !\n");
+		exit(0);
+	}
+	else if (alive == 1)
+	{
+		while (env->player_list[i])
+		{
+			if (!env->player_list[i]->isalive)
+			{
+				ft_printf("le joueur %d(%s) a gagne\n", env->player_list[i]->number, env->player_list[i]->name);
+				exit(0);
+			}
+			i++;
+		}
+	}
+	else
+	{
+		while (env->player_list[i])
+		{
+			env->player_list[i]->isalive = 0;
+			i++;
+		}
+	}
+}
+
 void	process_turn(t_env *env)
 {
 	int opcode = 0;
 	int	param = 0;
-	int curcycle = 1;
 	int pc; // opcode pour gérer l'opération
 
 	while (1)
@@ -131,10 +169,23 @@ void	process_turn(t_env *env)
 			}
 			env->arena->current_process--;
 		}
-		display(env->display, env);
-		curcycle++;
-		if (DEBUG && curcycle >= 10000)
-			exit(0);
+		if (DISPLAY)
+			display(env->display, env);
+		env->arena->current_cycle++;
+		env->arena->live_cycle++;
+		printf("%d | %d\n", env->arena->current_cycle, env->arena->process_amount);
+		if (env->arena->live_cycle >= env->arena->cycle_to_die)
+		{
+			env->arena->max_checks++;
+			if (env->arena->live_call >= NBR_LIVE || env->arena->max_checks >= MAX_CHECKS)
+			{
+				env->arena->cycle_to_die -= CYCLE_DELTA;
+				env->arena->max_checks = 0;
+			}
+			live_check(env);
+			env->arena->live_call = 0;
+			env->arena->live_cycle = 0;
+		}
 	}
 }
 
@@ -144,7 +195,7 @@ int main(int argc, char **argv)
 
 	env = env_init();
 
-	debugfd = open("/dev/ttys008", O_WRONLY);
+	debugfd = open("/dev/ttys006", O_WRONLY);
 
 	if (argc == 1)
 	{

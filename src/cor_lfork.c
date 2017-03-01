@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/14 20:17:58 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/02/24 18:18:04 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/01 10:02:21 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,16 @@
 static t_process	*fork_process(t_env *env, int arg1)
 {
 	t_process *fork;
+	int i = 0;
 	fork = process_init(CUR_PROC->master, CUR_PROC->master_id);
 
 	fork->carry = CUR_PROC->carry;
 	fork->wait_time = 999;
-	fork->reg = ft_memcpy(fork->reg, CUR_PROC->reg, REG_NUMBER * REG_SIZE);
+	while (i != REG_NUMBER)
+	{
+		fork->reg[i] = CUR_PROC->reg[i];
+		i++;
+	}
 	fork->pc = MODFIX(CUR_PROC->pc + arg1, MEM_SIZE);
 
 	return (fork);

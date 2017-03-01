@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 18:54:15 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/02/24 19:17:47 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/01 11:03:05 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # define PC_VALUE env->arena->zone[env->process_list[env->arena->current_process]->pc]
 # define CUR_PROC env->process_list[env->arena->current_process]
 # define ZONE env->arena->zone
-# define DISPLAY 1
+# define DISPLAY 0
 # define MODFIX(x, y) (((x) % (y)) < 0) ? ((x) % (y)) + (y) : (x) % (y)
 # define DEBUG 0
 
@@ -42,6 +42,7 @@ typedef struct s_player
 	int number;
 	int id;
 	char *name;
+	int isalive;
 	unsigned char *instructions;
 	int instructions_size;
 } t_player;
@@ -52,7 +53,12 @@ typedef struct s_arena
 	int player_amount;
 	int process_amount;
 	int current_process;
-	int *alive_check;
+
+	int cycle_to_die;
+	int live_cycle;
+	int live_call;
+	int max_checks;
+
 	unsigned char *zone;
 } t_arena;
 
