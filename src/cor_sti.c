@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/14 19:34:37 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/02/24 19:07:08 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/02 20:09:57 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,21 @@ int		cor_sti(t_env *env, int param, int pc)
 	int arg1 = 0;
 	int arg2 = 0;
 	int arg3 = 0;
-	int debugstuff = 0;
+	int kill_op = 0;
+
+	int debugs = 0;
 
 	//get arg1
 	if (((param & 192) >> 6) == REG_CODE)
 	{
-		debugstuff = ZONE[pc];
-		arg1 = swap_bytes(CUR_PROC->reg[ZONE[pc] - 1]);
-		pc = (pc + 1) % MEM_SIZE;
+		debugs = ZONE[pc];
+		if (ZONE[pc] - 1 < 0 || ZONE[pc] - 1 >= REG_NUMBER) //invalid reg, quit
+			kill_op = 1;
+		else
+		{
+			arg1 = swap_bytes(CUR_PROC->reg[ZONE[pc] - 1]);
+			pc = (pc + 1) % MEM_SIZE;
+		}
 	}
 	else
 		return ((CUR_PROC->pc + 1) % MEM_SIZE);
@@ -32,8 +39,13 @@ int		cor_sti(t_env *env, int param, int pc)
 	//get arg2
 	if (((param & 48) >> 4) == REG_CODE)
 	{
-		arg2 = swap_bytes(CUR_PROC->reg[ZONE[pc] - 1]);
-		pc = (pc + 1) % MEM_SIZE;
+		if (ZONE[pc] - 1 < 0 || ZONE[pc] - 1 >= REG_NUMBER) //invalid reg, quit
+			kill_op = 1;
+		else
+		{
+			arg2 = swap_bytes(CUR_PROC->reg[ZONE[pc] - 1]);
+			pc = (pc + 1) % MEM_SIZE;
+		}
 	}
 	else if (((param & 48) >> 4) == IND_CODE)
 	{
@@ -51,8 +63,13 @@ int		cor_sti(t_env *env, int param, int pc)
 	//get arg3
 	if (((param & 12) >> 2) == REG_CODE)
 	{
-		arg3 = swap_bytes(CUR_PROC->reg[ZONE[pc] - 1]);
-		pc = (pc + 1) % MEM_SIZE;
+		if (ZONE[pc] - 1 < 0 || ZONE[pc] - 1 >= REG_NUMBER) //invalid reg, quit
+			kill_op = 1;
+		else
+		{
+			arg3 = swap_bytes(CUR_PROC->reg[ZONE[pc] - 1]);
+			pc = (pc + 1) % MEM_SIZE;
+		}
 	}
 	else if (((param & 12) >> 2) == DIR_CODE)
 	{
@@ -61,6 +78,12 @@ int		cor_sti(t_env *env, int param, int pc)
 	}
 	else
 		return ((CUR_PROC->pc + 1) % MEM_SIZE);
+
+	//set wait time
+	CUR_PROC->wait_time = 25;
+
+	if (kill_op)
+		return (pc);
 
 	//apply sti
 	int pos = MODFIX(CUR_PROC->pc + ((arg2 + arg3) % IDX_MOD), MEM_SIZE);
@@ -85,13 +108,10 @@ int		cor_sti(t_env *env, int param, int pc)
 	env->display[(pos + 2) % MEM_SIZE]->recent_display = 10;
 	env->display[(pos + 3) % MEM_SIZE]->recent_display = 10;
 
-	//set wait time
-	CUR_PROC->wait_time = 25;
-
 	if (DEBUG)
 	{
-		ft_printf("P%4d | sti r%d %d %d\n", CUR_PROC->id + 1, debugstuff, arg2, arg3);
-		ft_printf("       | -> store to %d + %d = %d (with pc and mod %d)\n", arg2, arg3, arg2 + arg3, pos);
+		printf("P%4d | sti r%d %d %d\n", CUR_PROC->id, debugs, arg2, arg3);
+		printf("       | -> store to %d + %d = %d (with pc and mod %d)\n", arg2, arg3, arg2+arg3, CUR_PROC->pc);
 	}
 	return (pc);
 }

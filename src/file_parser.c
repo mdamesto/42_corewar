@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/10 17:19:28 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/03/01 10:16:16 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/02 15:20:21 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static t_player		*file_parser(int fd)
 {
 
 	t_player *player;
-	unsigned char *buf = (unsigned char *)malloc((2048 > CHAMP_MAX_SIZE) ? 2048 : CHAMP_MAX_SIZE);
+	unsigned char *buf = (unsigned char *)malloc((2048 > CHAMP_MAX_SIZE) ? 2048 + 4 : CHAMP_MAX_SIZE + 4);
 	unsigned int bufint;
 	int i = 0;
 

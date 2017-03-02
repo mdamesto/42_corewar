@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 18:54:15 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/03/01 11:03:05 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/02 20:48:34 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,10 @@
 #ifndef		COREWAR_H
 # define	COREWAR_H
 
-# define PC_VALUE env->arena->zone[env->process_list[env->arena->current_process]->pc]
+
 # define CUR_PROC env->process_list[env->arena->current_process]
 # define ZONE env->arena->zone
-# define DISPLAY 0
+# define DISPLAY 1
 # define MODFIX(x, y) (((x) % (y)) < 0) ? ((x) % (y)) + (y) : (x) % (y)
 # define DEBUG 0
 

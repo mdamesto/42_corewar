@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/10 17:15:11 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/03/01 11:04:53 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/02 16:13:52 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,7 @@ t_env *env_init()
 	i = 0;
 	env = ft_memalloc(sizeof(t_env));
 	env->arena = arena_init();
-	env->player_list = ft_memalloc(sizeof(t_player *) * MAX_PLAYERS + 1);
-	env->process_list = ft_memalloc(sizeof(t_process *) * MAX_PLAYERS + 1);
+	env->player_list = ft_memalloc(sizeof(t_player *) * (MAX_PLAYERS + 1));
 	env->display = ft_memalloc(sizeof(t_display *) * MEM_SIZE);
 	while (i != MEM_SIZE)
 	{
@@ -82,6 +81,7 @@ t_env *env_init()
 		i++;
 	}
 
+	env->process_list = ft_memalloc(sizeof(t_process *) * (MAX_PLAYERS + 1));
 	return (env);
 }
 

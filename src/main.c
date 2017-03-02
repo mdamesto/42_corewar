@@ -6,13 +6,14 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 16:54:36 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/03/01 12:24:38 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/02 20:51:09 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <corewar.h>
 
 int debugfd = -1;
+
 
 void hexa_dump(unsigned char *memory, int size)
 {
@@ -97,7 +98,7 @@ int		operation(t_env *env, int opcode, int param, int pc)
 	else if (opcode == 16)
  		pc = cor_aff(env, param, pc);
 	else
-		pc = (pc + 1) % MEM_SIZE;
+		pc = (CUR_PROC->pc + 1) % MEM_SIZE;
 	return (pc);
 }
 
@@ -131,13 +132,11 @@ void	live_check(t_env *env)
 		}
 	}
 	else
-	{
 		while (env->player_list[i])
 		{
 			env->player_list[i]->isalive = 0;
 			i++;
 		}
-	}
 }
 
 void	process_turn(t_env *env)
@@ -169,13 +168,15 @@ void	process_turn(t_env *env)
 			}
 			env->arena->current_process--;
 		}
-		if (DISPLAY)
+//		printf("%d | %d | %d | %d\n", env->arena->current_cycle, env->arena->process_amount, env->arena->cycle_to_die, env->arena->live_call);
+		if (DISPLAY && env->arena->current_cycle >= 18000)
 			display(env->display, env);
 		env->arena->current_cycle++;
 		env->arena->live_cycle++;
-		printf("%d | %d\n", env->arena->current_cycle, env->arena->process_amount);
+
 		if (env->arena->live_cycle >= env->arena->cycle_to_die)
 		{
+			//		ft_printf("live check !\n");
 			env->arena->max_checks++;
 			if (env->arena->live_call >= NBR_LIVE || env->arena->max_checks >= MAX_CHECKS)
 			{
@@ -185,6 +186,8 @@ void	process_turn(t_env *env)
 			live_check(env);
 			env->arena->live_call = 0;
 			env->arena->live_cycle = 0;
+			if (env->arena->cycle_to_die < 0)
+				env->arena->cycle_to_die = 0;
 		}
 	}
 }

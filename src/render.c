@@ -87,7 +87,6 @@ void init_display(t_env *env)
 	wattron(env->w_main, A_BOLD);
 
 
-	ft_putstr_fd("succesinit\n", debugfd);
 }
 
 void 	display(t_display **display, t_env *env)

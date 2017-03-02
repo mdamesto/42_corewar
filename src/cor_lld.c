@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/14 20:14:27 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/02/24 15:49:45 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/02 17:20:47 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ int		cor_lld(t_env *env, int param, int pc)
 {
 	int arg1;
 	int arg2;
+	int kill_op = 0;
 
 	//get arg1
 	if (((param & 192) >> 6) == IND_CODE)
@@ -34,11 +35,22 @@ int		cor_lld(t_env *env, int param, int pc)
 	//get arg2
 	if (((param & 48) >> 4) == REG_CODE)
 	{
-		arg2 = ZONE[pc];
-		pc = (pc + 1) % MEM_SIZE;
+		if (ZONE[pc] - 1 < 0 || ZONE[pc] - 1 >= REG_NUMBER) //invalid reg, quit
+			kill_op = 1;
+		else
+		{
+			arg2 = ZONE[pc];
+			pc = (pc + 1) % MEM_SIZE;
+		}
 	}
 	else
 		return ((CUR_PROC->pc + 1) % MEM_SIZE);
+
+	//set wait time
+	CUR_PROC->wait_time = 10;
+
+	if (kill_op)
+		return (pc);
 
 	//apply lld
 	CUR_PROC->reg[arg2 - 1] = swap_bytes(arg1);
@@ -48,9 +60,6 @@ int		cor_lld(t_env *env, int param, int pc)
 		CUR_PROC->carry = 1;
 	else
 		CUR_PROC->carry = 0;
-
-	//set wait time
-	CUR_PROC->wait_time = 10;
 
 	return (pc);
 }
