@@ -6,44 +6,43 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/10 17:19:28 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/03/02 15:20:21 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/06 16:43:40 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <corewar.h>
 
-static t_player		*file_parser(int fd)
+static t_player	*file_parser(int fd)
 {
-
-	t_player *player;
-	unsigned char *buf = (unsigned char *)malloc((2048 > CHAMP_MAX_SIZE) ? 2048 + 4 : CHAMP_MAX_SIZE + 4);
-	unsigned int bufint;
-	int i = 0;
+	t_player		*player;
+	unsigned char	*buf;
+	unsigned int	bufint;
+	int				i;
 
 	player = player_init();
-
+	buf = (unsigned char *)malloc((2048 > CHAMP_MAX_SIZE) ? 2048 + 4 : CHAMP_MAX_SIZE + 4);
+	i = 0;
 	read(fd, buf, 4);
 	bufint = (buf[1] << 16) + (buf[2] << 8) + buf[3];
 	if (bufint != COREWAR_EXEC_MAGIC)
 	{
 		printf("header error : %#x vs %#x\n", bufint, COREWAR_EXEC_MAGIC);
-		//return (0);
+		return (NULL);
 	}
 	read(fd, buf, 128);
 	player->name = ft_strcpy(player->name, (char *)buf);
-	read(fd, buf, 4); // kill decalage
+	read(fd, buf, 4);
 	read(fd, buf, 4);
 	bufint = (buf[0] << 24) + (buf[1] << 16) + (buf[2] << 8) + buf[3];
 	if (bufint > CHAMP_MAX_SIZE)
 	{
 		printf("error size, too big : %d vs %d\n", bufint, CHAMP_MAX_SIZE);
-		//return (0);
+		return (NULL);
 		player->instructions_size = bufint;
-
 	}
 	else
 		player->instructions_size = bufint;
-	read(fd, buf, 2048+4); // kill comments & decalage
+	read(fd, buf, 2048 + 4);
 	while (read(fd, buf, 1))
 	{
 		player->instructions[i] = *buf;
@@ -78,14 +77,18 @@ static int		get_dump(int ac, char **av)
 	return (dump_value);
 }
 
-int		arg_parser(int ac, char **av, t_env *env)
+int				arg_parser(int ac, char **av, t_env *env)
 {
-	int i = 1;
+	int i;
 	int fd;
-	int j = 0;
-	int k = 0;
-	int l = 1;
+	int j;
+	int k;
+	int l;
 
+	i = 1;
+	j = 0;
+	k = 0;
+	l = 1;
 	if (ac >= 3 && !ft_strcmp("-dump", av[1]))
 	{
 		if (get_dump(ac, av) == -1)
@@ -96,8 +99,8 @@ int		arg_parser(int ac, char **av, t_env *env)
 	{
 		if (!ft_strcmp("-n", av[i]))
 		{
-			if (i+2 < ac && ft_isint(av[i+1]) && ft_atoi(av[i+1]) > 0)
-				k = ft_atoi(av[i+1]);
+			if (i + 2 < ac && ft_isint(av[i + 1]) && ft_atoi(av[i + 1]) > 0)
+				k = ft_atoi(av[i + 1]);
 			else
 				return (-2);
 			i += 2;
@@ -118,7 +121,7 @@ int		arg_parser(int ac, char **av, t_env *env)
 				env->player_list[j]->number = l;
 				l++;
 			}
-			env->player_list[j+1] = NULL;
+			env->player_list[j + 1] = NULL;
 			j++;
 		}
 		else

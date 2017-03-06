@@ -6,18 +6,17 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/10 17:15:11 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/03/02 16:13:52 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/06 16:37:57 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <corewar.h>
 
-t_player	*player_init()
+t_player	*player_init(void)
 {
 	t_player *player;
 
 	player = ft_memalloc(sizeof(t_player));
-
 	player->number = 0;
 	player->id = 0;
 	player->name = ft_strnew(128);
@@ -29,11 +28,10 @@ t_player	*player_init()
 
 t_process	*process_init(int master, int master_id)
 {
-	t_process *process;
-	static int id;
+	t_process	*process;
+	static int	id;
 
 	process = ft_memalloc(sizeof(t_process));
-
 	process->id = id;
 	process->pc = 0;
 	process->carry = 0;
@@ -41,16 +39,16 @@ t_process	*process_init(int master, int master_id)
 	process->master_id = master_id;
 	process->wait_time = 0;
 	id++;
-
 	process->reg = ft_memalloc(sizeof(int) * REG_NUMBER);
 	return (process);
 }
 
-t_arena *arena_init()
+t_arena		*arena_init(void)
 {
-	t_arena *arena = ft_memalloc(sizeof(t_arena));
-	int i;
+	t_arena	*arena;
+	int		i;
 
+	arena = ft_memalloc(sizeof(t_arena));
 	i = 0;
 	arena->current_cycle = 0;
 	arena->process_amount = 0;
@@ -61,14 +59,13 @@ t_arena *arena_init()
 	arena->live_cycle = 0;
 	arena->live_call = 0;
 	arena->max_checks = 0;
-
 	return (arena);
 }
 
-t_env *env_init()
+t_env		*env_init(void)
 {
-	t_env *env;
-	int i;
+	t_env	*env;
+	int		i;
 
 	i = 0;
 	env = ft_memalloc(sizeof(t_env));
@@ -80,12 +77,11 @@ t_env *env_init()
 		env->display[i] = display_init();
 		i++;
 	}
-
 	env->process_list = ft_memalloc(sizeof(t_process *) * (MAX_PLAYERS + 1));
 	return (env);
 }
 
-t_display *display_init()
+t_display	*display_init(void)
 {
 	t_display *display;
 
@@ -94,6 +90,5 @@ t_display *display_init()
 	display->champion = 0;
 	display->recent_display = 0;
 	display->ispc = 0;
-
 	return (display);
 }

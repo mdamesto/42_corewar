@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/14 19:01:06 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/03/02 17:15:22 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/06 16:59:30 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,16 @@
 
 int		cor_ldi(t_env *env, int param, int pc)
 {
-	int arg1 = 0;
-	int arg2 = 0;
-	int arg3 = 0;
-	int kill_op = 0;
+	int arg1;
+	int arg2;
+	int arg3;
+	int kill_op;
+	int pos;
 
-	//get arg1
+	kill_op = 0;
 	if (((param & 192) >> 6) == REG_CODE)
 	{
-		if (ZONE[pc] - 1 < 0 || ZONE[pc] - 1 >= REG_NUMBER) //invalid reg, quit
+		if (ZONE[pc] - 1 < 0 || ZONE[pc] - 1 >= REG_NUMBER)
 			kill_op = 1;
 		else
 		{
@@ -42,11 +43,9 @@ int		cor_ldi(t_env *env, int param, int pc)
 	}
 	else
 		return ((CUR_PROC->pc + 1) % MEM_SIZE);
-
-	//get arg2
 	if (((param & 48) >> 4) == REG_CODE)
 	{
-		if (ZONE[pc] - 1 < 0 || ZONE[pc] - 1 >= REG_NUMBER) //invalid reg, quit
+		if (ZONE[pc] - 1 < 0 || ZONE[pc] - 1 >= REG_NUMBER)
 			kill_op = 1;
 		else
 		{
@@ -61,11 +60,9 @@ int		cor_ldi(t_env *env, int param, int pc)
 	}
 	else
 		return ((CUR_PROC->pc + 1) % MEM_SIZE);
-
-	//get arg3
 	if (((param & 12) >> 2) == REG_CODE)
 	{
-		if (ZONE[pc] - 1 < 0 || ZONE[pc] - 1 >= REG_NUMBER) //invalid reg, quit
+		if (ZONE[pc] - 1 < 0 || ZONE[pc] - 1 >= REG_NUMBER)
 			kill_op = 1;
 		else
 		{
@@ -75,22 +72,15 @@ int		cor_ldi(t_env *env, int param, int pc)
 	}
 	else
 		return ((CUR_PROC->pc + 1) % MEM_SIZE);
-
-	//set wait time
 	CUR_PROC->wait_time = 25;
-
 	if (kill_op)
 		return (pc);
-
-	//apply ldi
-	int pos = MODFIX(CUR_PROC->pc + ((arg1 + arg2) % IDX_MOD), MEM_SIZE);
+	pos = MODFIX(CUR_PROC->pc + ((arg1 + arg2) % IDX_MOD), MEM_SIZE);
 	CUR_PROC->reg[arg3 - 1] = swap_bytes(get_direct(ZONE, pos));
-
 	if (DEBUG)
 	{
 		ft_printf("P%4d | ldi %d %d r%d\n", CUR_PROC->id, arg1, arg2, arg3);
-		ft_printf("       | -> load from %d + %d = %d\n", arg1, arg2, arg1+arg2);
+		ft_printf("       | -> load from %d + %d = %d\n", arg1, arg2, arg1 + arg2);
 	}
-
 	return (pc);
 }

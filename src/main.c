@@ -6,23 +6,22 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 16:54:36 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/03/02 20:51:09 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/06 16:36:11 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <corewar.h>
 
-int debugfd = -1;
-
-
-void hexa_dump(unsigned char *memory, int size)
+void	hexa_dump(unsigned char *memory, int size)
 {
-	int i = 1;
-	while (i-1 != size)
+	int i;
+
+	i = 1;
+	while (i - 1 != size)
 	{
-		if (memory[i-1] <= 15)
+		if (memory[i - 1] <= 15)
 			ft_printf("0");
-		ft_printf("%x ", memory[i-1]);
+		ft_printf("%x ", memory[i - 1]);
 		if (i % 32 == 0)
 			ft_printf("\n");
 		i++;
@@ -30,12 +29,15 @@ void hexa_dump(unsigned char *memory, int size)
 	ft_printf("\n");
 }
 
-void inject_players(t_env *env)
+void	inject_players(t_env *env)
 {
-	int i = 0;
-	int j = 0;
-	int k = 0;
+	int i;
+	int j;
+	int k;
 
+	i = 0;
+	j = 0;
+	k = 0;
 	while (env->player_list[i])
 	{
 		env->process_list[i] = process_init(env->player_list[i]->number, i + 1);
@@ -88,7 +90,7 @@ int		operation(t_env *env, int opcode, int param, int pc)
 	else if (opcode == 11)
 		pc = cor_sti(env, param, pc);
 	else if (opcode == 12)
-			pc = cor_fork(env, pc);
+		pc = cor_fork(env, pc);
 	else if (opcode == 13)
 		pc = cor_lld(env, param, pc);
 	else if (opcode == 14)
@@ -96,7 +98,7 @@ int		operation(t_env *env, int opcode, int param, int pc)
 	else if (opcode == 15)
 		pc = cor_lfork(env, pc);
 	else if (opcode == 16)
- 		pc = cor_aff(env, param, pc);
+		pc = cor_aff(env, param, pc);
 	else
 		pc = (CUR_PROC->pc + 1) % MEM_SIZE;
 	return (pc);
@@ -104,9 +106,11 @@ int		operation(t_env *env, int opcode, int param, int pc)
 
 void	live_check(t_env *env)
 {
-	int i = 0;
-	int alive = env->arena->player_amount;
+	int i;
+	int alive;
 
+	i = 0;
+	alive = env->arena->player_amount;
 	while (env->player_list[i])
 	{
 		if (!env->player_list[i]->isalive)
@@ -141,10 +145,12 @@ void	live_check(t_env *env)
 
 void	process_turn(t_env *env)
 {
-	int opcode = 0;
-	int	param = 0;
-	int pc; // opcode pour gérer l'opération
+	int opcode;
+	int	param;
+	int pc;
 
+	opcode = 0;
+	param = 0;
 	while (1)
 	{
 		env->arena->current_process = env->arena->process_amount - 1;
@@ -154,29 +160,26 @@ void	process_turn(t_env *env)
 				CUR_PROC->wait_time--;
 			if (!CUR_PROC->wait_time)
 			{
-				pc = CUR_PROC->pc; // buffer set, on l'utilise pour l'opération
+				pc = CUR_PROC->pc;
 				opcode = ZONE[pc];
 				pc = (pc + 1) % MEM_SIZE;
-				if (!(opcode == 1 || opcode == 9 || opcode == 12 || opcode == 15)) // opé sans params
+				if (!(opcode == 1 || opcode == 9 || opcode == 12 || opcode == 15))
 				{
 					param = ZONE[pc % MEM_SIZE];
 					pc = (pc + 1) % MEM_SIZE;
 				}
 				env->display[CUR_PROC->pc]->ispc = 0;
-				CUR_PROC->pc = operation(env, opcode, param, pc); // execute l'opération, l'opé retourne le buffer pointé sur la prochaine opé
+				CUR_PROC->pc = operation(env, opcode, param, pc);
 				env->display[CUR_PROC->pc]->ispc = 1;
 			}
 			env->arena->current_process--;
 		}
-//		printf("%d | %d | %d | %d\n", env->arena->current_cycle, env->arena->process_amount, env->arena->cycle_to_die, env->arena->live_call);
 		if (DISPLAY && env->arena->current_cycle >= 18000)
 			display(env->display, env);
 		env->arena->current_cycle++;
 		env->arena->live_cycle++;
-
 		if (env->arena->live_cycle >= env->arena->cycle_to_die)
 		{
-			//		ft_printf("live check !\n");
 			env->arena->max_checks++;
 			if (env->arena->live_call >= NBR_LIVE || env->arena->max_checks >= MAX_CHECKS)
 			{
@@ -192,20 +195,18 @@ void	process_turn(t_env *env)
 	}
 }
 
-int main(int argc, char **argv)
+int		main(int argc, char **argv)
 {
-	t_env *env;
+	t_env	*env;
+	int		j;
 
 	env = env_init();
-
-	debugfd = open("/dev/ttys006", O_WRONLY);
-
 	if (argc == 1)
 	{
 		ft_printf("no commmands\n");
 		return (0);
 	}
-	int j = arg_parser(argc, argv, env);
+	j = arg_parser(argc, argv, env);
 	if (j == -1)
 		printf("dump error");
 	else if (j == -2)
@@ -216,13 +217,9 @@ int main(int argc, char **argv)
 		printf("too much players");
 	if (j != 1)
 		return (1);
-
 	inject_players(env);
-
 	if (DISPLAY)
 		init_display(env);
-
 	process_turn(env);
-
 	return (0);
 }

@@ -1,35 +1,42 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   render.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/03/06 17:02:22 by jde-maga          #+#    #+#             */
+/*   Updated: 2017/03/06 17:04:27 by jde-maga         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <corewar.h>
 #include <ncurses.h>
 
-# define LINE(i) (i) / 64
-# define COL(i) ((i) % 64) * 3
+#define LINE(i) (i) / 64
+#define COL(i) ((i) % 64) * 3
 
-static void   my_init_color()
+static void	my_init_color(void)
 {
-    start_color();
-
-    //CHMP_COLOR
-    init_pair(1, COLOR_BLUE, COLOR_WHITE);
-    init_pair(2, COLOR_GREEN, COLOR_WHITE);
-    init_pair(3, COLOR_YELLOW, COLOR_WHITE);
-    init_pair(4, COLOR_MAGENTA, COLOR_WHITE);
-
-    //PC on INVALID OP_CODE
-    init_pair(5, COLOR_WHITE, COLOR_BLUE);
-    init_pair(6, COLOR_WHITE, COLOR_GREEN);
-    init_pair(7, COLOR_WHITE, COLOR_YELLOW);
-    init_pair(8, COLOR_WHITE, COLOR_MAGENTA);
-
-    //PC on INVALID OP_CODE
-    init_pair(9, COLOR_RED, COLOR_BLUE);
-    init_pair(10, COLOR_RED, COLOR_GREEN);
-    init_pair(11, COLOR_RED, COLOR_YELLOW);
-    init_pair(12, COLOR_RED, COLOR_MAGENTA);
-
-    //COLOR OF UNUSED MEM
-    init_pair(13, COLOR_BLACK, COLOR_WHITE);
+	start_color();
+	//CHMP_COLOR
+	init_pair(1, COLOR_BLUE, COLOR_WHITE);
+	init_pair(2, COLOR_GREEN, COLOR_WHITE);
+	init_pair(3, COLOR_YELLOW, COLOR_WHITE);
+	init_pair(4, COLOR_MAGENTA, COLOR_WHITE);
+	//PC on INVALID OP_CODE
+	init_pair(5, COLOR_WHITE, COLOR_BLUE);
+	init_pair(6, COLOR_WHITE, COLOR_GREEN);
+	init_pair(7, COLOR_WHITE, COLOR_YELLOW);
+	init_pair(8, COLOR_WHITE, COLOR_MAGENTA);
+	//PC on INVALID OP_CODE
+	init_pair(9, COLOR_RED, COLOR_BLUE);
+	init_pair(10, COLOR_RED, COLOR_GREEN);
+	init_pair(11, COLOR_RED, COLOR_YELLOW);
+	init_pair(12, COLOR_RED, COLOR_MAGENTA);
+	//COLOR OF UNUSED MEM
+	init_pair(13, COLOR_BLACK, COLOR_WHITE);
 }
-
 // ATT_ON AND ATT_OFF CAN BE ONE FCT (USING *FCT)  ----------------- TODO
 static void	att_on(t_env *env, t_display *display)
 {
@@ -64,40 +71,35 @@ static void	att_off(t_env *env, t_display *display)
 	}
 }
 
-void init_display(t_env *env)
+void		init_display(t_env *env)
 {
-    WINDOW *main;
-    WINDOW *menu;
-
-    initscr();
-
-    //NCURSES OPTION/CONFIG
-    cbreak();
-    noecho();
-    scrollok(stdscr, TRUE);
-
-    //INIT COLOR AND SUBWINDOWS and STORE IN ENV
-    my_init_color();
-    main = subwin(stdscr, 64, 193, 1, 1);
-    menu = subwin(stdscr, 64, 40, 1, 196);
-    wbkgd(main, COLOR_PAIR(13));
-    wbkgd(menu, COLOR_PAIR(13));
-    env->w_main = main;
-    env->w_menu = menu;
+	WINDOW * main;
+	WINDOW * menu;
+	initscr();
+	//NCURSES OPTION/CONFIG
+	cbreak();
+	noecho();
+	scrollok(stdscr, TRUE);
+	//INIT COLOR AND SUBWINDOWS and STORE IN ENV
+	my_init_color();
+	main = subwin(stdscr, 64, 193, 1, 1);
+	menu = subwin(stdscr, 64, 40, 1, 196);
+	wbkgd(main, COLOR_PAIR(13));
+	wbkgd(menu, COLOR_PAIR(13));
+	env->w_main = main;
+	env->w_menu = menu;
 	wattron(env->w_main, A_BOLD);
-
-
 }
 
-void 	display(t_display **display, t_env *env)
+void		display(t_display **display, t_env *env)
 {
-	const char hex[] = "0123456789abcdef";
-	char str[3];
-	int i;
+	const char	hex[] = "0123456789abcdef";
+	char		str[3];
+	int			i;
 
 	str[2] = '\0';
 	i = -1;
-	while(++i < 4096)
+	while (++i < 4096)
 	{
 		att_on(env, display[i]);
 		str[0] = hex[display[i]->value / 16];
@@ -109,7 +111,7 @@ void 	display(t_display **display, t_env *env)
 	wrefresh(env->w_main);
 }
 
-void	end_display(t_env * env)
+void		end_display(t_env *env)
 {
 	free(env->w_main);
 	free(env->w_menu);
