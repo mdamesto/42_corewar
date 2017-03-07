@@ -6,30 +6,13 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 16:54:36 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/03/07 16:32:20 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/07 18:07:12 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <corewar.h>
 
-void	hexa_dump(unsigned char *memory, int size)
-{
-	int i;
-
-	i = 1;
-	while (i - 1 != size)
-	{
-		if (memory[i - 1] <= 15)
-			ft_printf("0");
-		ft_printf("%x ", memory[i - 1]);
-		if (i % 32 == 0)
-			ft_printf("\n");
-		i++;
-	}
-	ft_printf("\n");
-}
-
-void	inject_players(t_env *env)
+void	create_starting_process(t_env *env)
 {
 	int i;
 	int j;
@@ -38,14 +21,6 @@ void	inject_players(t_env *env)
 	i = 0;
 	j = 0;
 	k = 0;
-	while (env->player_list[i])
-	{
-		env->process_list[i] = process_init(env->player_list[i]->number, i + 1);
-		env->process_list[i]->reg[0] = swap_bytes(env->player_list[i]->number);
-		env->arena->process_amount++;
-		i++;
-	}
-	i = 0;
 	while (env->player_list[i])
 	{
 		env->process_list[i]->pc = j;
@@ -63,6 +38,21 @@ void	inject_players(t_env *env)
 		j = (MEM_SIZE / env->arena->player_amount) * i;
 		k = 0;
 	}
+}
+
+void	inject_players(t_env *env)
+{
+	int i;
+
+	i = 0;
+	while (env->player_list[i])
+	{
+		env->process_list[i] = process_init(env->player_list[i]->number, i + 1);
+		env->process_list[i]->reg[0] = swap_bytes(env->player_list[i]->number);
+		env->arena->process_amount++;
+		i++;
+	}
+	create_starting_process(env);
 }
 
 int		operation(t_env *env, int opcode, int param, int pc)
@@ -129,7 +119,8 @@ void	live_check(t_env *env)
 		{
 			if (!env->player_list[i]->isalive)
 			{
-				ft_printf("le joueur %d(%s) a gagne\n", env->player_list[i]->number, env->player_list[i]->name);
+				ft_printf("le joueur %d(%s) a gagne\n",
+						env->player_list[i]->number, env->player_list[i]->name);
 				exit(0);
 			}
 			i++;
@@ -141,6 +132,29 @@ void	live_check(t_env *env)
 			env->player_list[i]->isalive = 0;
 			i++;
 		}
+}
+
+void	end_cycle(t_env *env)
+{
+	if (DISPLAY)
+		display(env->display, env);
+	env->arena->current_cycle++;
+	env->arena->live_cycle++;
+	if (env->arena->live_cycle >= env->arena->cycle_to_die)
+	{
+		env->arena->max_checks++;
+		if (env->arena->live_call >= NBR_LIVE ||
+			env->arena->max_checks >= MAX_CHECKS)
+		{
+			env->arena->cycle_to_die -= CYCLE_DELTA;
+			env->arena->max_checks = 0;
+		}
+		live_check(env);
+		env->arena->live_call = 0;
+		env->arena->live_cycle = 0;
+		if (env->arena->cycle_to_die < 0)
+			env->arena->cycle_to_die = 0;
+	}
 }
 
 void	process_turn(t_env *env)
@@ -163,7 +177,8 @@ void	process_turn(t_env *env)
 				pc = CUR_PROC->pc;
 				opcode = ZONE[pc];
 				pc = (pc + 1) % MEM_SIZE;
-				if (!(opcode == 1 || opcode == 9 || opcode == 12 || opcode == 15))
+				if (!(opcode == 1 || opcode == 9 ||
+					opcode == 12 || opcode == 15))
 				{
 					param = ZONE[pc % MEM_SIZE];
 					pc = (pc + 1) % MEM_SIZE;
@@ -174,24 +189,7 @@ void	process_turn(t_env *env)
 			}
 			env->arena->current_process--;
 		}
-		//	if (DISPLAY && env->arena->current_cycle >= 18000)
-		display(env->display, env);
-		env->arena->current_cycle++;
-		env->arena->live_cycle++;
-		if (env->arena->live_cycle >= env->arena->cycle_to_die)
-		{
-			env->arena->max_checks++;
-			if (env->arena->live_call >= NBR_LIVE || env->arena->max_checks >= MAX_CHECKS)
-			{
-				env->arena->cycle_to_die -= CYCLE_DELTA;
-				env->arena->max_checks = 0;
-			}
-			live_check(env);
-			env->arena->live_call = 0;
-			env->arena->live_cycle = 0;
-			if (env->arena->cycle_to_die < 0)
-				env->arena->cycle_to_die = 0;
-		}
+		end_cycle(env);
 	}
 }
 

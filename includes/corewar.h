@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 18:54:15 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/03/07 15:00:16 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/07 17:46:56 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ t_env			*env_init();
 t_display		*display_init();
 
 int				arg_parser(int ac, char **av, t_env *env);
+t_player		*file_parser(int fd);
 
 int				get_direct(unsigned char *zone, int pc);
 int				get_indirect(unsigned char *zone, int pc, int refpc);
@@ -108,8 +109,6 @@ int				cor_lfork(t_env *env, int pc);
 int				cor_aff(t_env *env, int param, int pc);
 
 int				swap_bytes(int arg);
-
-void			hexa_dump(unsigned char *memory, int size);
 
 void			init_display(t_env *env);
 void			display(t_display **display, t_env *env);
