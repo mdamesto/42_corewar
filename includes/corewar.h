@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 18:54:15 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/03/06 16:31:41 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/07 15:00:16 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 
 # define CUR_PROC env->process_list[env->arena->current_process]
 # define ZONE env->arena->zone
-# define DISPLAY 0
+# define DISPLAY 1
 # define MODFIX(x, y) (((x) % (y)) < 0) ? ((x) % (y)) + (y) : (x) % (y)
 # define DEBUG 0
 

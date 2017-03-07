@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/14 18:04:21 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/03/06 16:58:12 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/07 16:33:58 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,45 @@ static void	apply_st_zone(t_env *env, int arg1, int arg2)
 	env->display[(position + 3) % MEM_SIZE]->recent_display = 10;
 }
 
+static int	get_variable_1(int param, int *pc, t_env *env, int *arg1)
+{
+	if (((param & 192) >> 6) == REG_CODE)
+	{
+		if (ZONE[*pc] - 1 < 0 || ZONE[*pc] - 1 >= REG_NUMBER)
+			return (1);
+		else
+		{
+			*arg1 = ZONE[*pc];
+			*pc = (*pc + 1) % MEM_SIZE;
+		}
+	}
+	else
+		return (-10);
+	return (0);
+}
+
+static int	get_variable_2(int param, int *pc, t_env *env, int *arg2)
+{
+	if (((param & 48) >> 4) == IND_CODE)
+	{
+		*arg2 = get_direct_short(ZONE, *pc);
+		*pc = (*pc + 2) % MEM_SIZE;
+	}
+	else if (((param & 48) >> 4) == REG_CODE)
+	{
+		if (ZONE[*pc] - 1 < 0 || ZONE[*pc] - 1 >= REG_NUMBER)
+			return (1);
+		else
+		{
+			*arg2 = ZONE[*pc];
+			*pc = (*pc + 1) % MEM_SIZE;
+		}
+	}
+	else
+		return (-10);
+	return (0);
+}
+
 int			cor_st(t_env *env, int param, int pc)
 {
 	int arg1;
@@ -44,34 +83,9 @@ int			cor_st(t_env *env, int param, int pc)
 	int kill_op;
 
 	kill_op = 0;
-	if (((param & 192) >> 6) == REG_CODE)
-	{
-		if (ZONE[pc] - 1 < 0 || ZONE[pc] - 1 >= REG_NUMBER)
-			kill_op = 1;
-		else
-		{
-			arg1 = ZONE[pc];
-			pc = (pc + 1) % MEM_SIZE;
-		}
-	}
-	else
+	if ((kill_op += get_variable_1(param, &pc, env, &arg1)) < 0)
 		return ((CUR_PROC->pc + 1) % MEM_SIZE);
-	if (((param & 48) >> 4) == IND_CODE)
-	{
-		arg2 = get_direct_short(ZONE, pc);
-		pc = (pc + 2) % MEM_SIZE;
-	}
-	else if (((param & 48) >> 4) == REG_CODE)
-	{
-		if (ZONE[pc] - 1 < 0 || ZONE[pc] - 1 >= REG_NUMBER)
-			kill_op = 1;
-		else
-		{
-			arg2 = ZONE[pc];
-			pc = (pc + 1) % MEM_SIZE;
-		}
-	}
-	else
+	if ((kill_op += get_variable_2(param, &pc, env, &arg2)) < 0)
 		return ((CUR_PROC->pc + 1) % MEM_SIZE);
 	CUR_PROC->wait_time = 5;
 	if (kill_op)
@@ -80,7 +94,5 @@ int			cor_st(t_env *env, int param, int pc)
 		apply_st_zone(env, arg1, arg2);
 	else
 		CUR_PROC->reg[arg2 - 1] = CUR_PROC->reg[arg1 - 1];
-	if (DEBUG)
-		ft_printf("P%4d | st r%d %d\n", CUR_PROC->id + 1, arg1, arg2);
 	return (pc);
 }

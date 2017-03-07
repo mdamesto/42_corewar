@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/16 15:31:09 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/03/06 16:45:44 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/07 14:59:54 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int		swap_bytes(int arg)
 	int byte1;
 	int byte2;
 	int byte3;
-	int bute4;
+	int byte4;
 	int otp;
 
 	byte1 = (arg & 0xFF000000) >> 24;

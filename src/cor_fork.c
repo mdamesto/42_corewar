@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/14 19:56:32 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/03/06 16:55:08 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/07 16:04:13 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,11 @@ int					cor_fork(t_env *env, int pc)
 	arg1 = get_direct_short(ZONE, pc) % IDX_MOD;
 	pc = (pc + 2) % MEM_SIZE;
 	env->process_list[env->arena->process_amount] = fork_process(env, arg1);
-	env->process_list = realloc(env->process_list, sizeof(t_process *) * (env->arena->process_amount + 2));
+	env->process_list = realloc(env->process_list,
+						sizeof(t_process *) * (env->arena->process_amount + 2));
 	env->arena->process_amount++;
 	env->process_list[env->arena->process_amount] = NULL;
 	env->display[MODFIX(CUR_PROC->pc + (arg1 % IDX_MOD), MEM_SIZE)]->ispc = 1;
 	CUR_PROC->wait_time = 799;
-	if (DEBUG)
-		ft_printf("P%4d | fork %d (%d)\n", CUR_PROC->id + 1, arg1, MODFIX(CUR_PROC->pc + (arg1 % IDX_MOD), MEM_SIZE));
 	return (pc);
 }

@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/14 17:46:26 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/03/06 16:44:59 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/07 14:59:37 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int		get_indirect_idx(unsigned char *zone, int pc, int refpc)
 	short	target;
 	int		otp;
 
-	tagret = 0;
+	target = 0;
 	otp = 0;
 	target = zone[pc] << 8;
 	target += zone[(pc + 1) % MEM_SIZE];

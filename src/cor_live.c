@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/14 17:44:03 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/03/06 16:56:38 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/07 16:27:59 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ static void	apply_livecheck(t_env *env, int arg1)
 	{
 		if (env->player_list[i]->number == arg1)
 		{
-			ft_printf("un processus dit que le joueur %d(%s) est en vie\n", env->player_list[i]->number, env->player_list[i]->name);
+			//		ft_printf("un processus dit que le joueur %d(%s) est en vie\n",
+			//					env->player_list[i]->number, env->player_list[i]->name);
 			env->player_list[i]->isalive = 1;
 		}
 		i++;
@@ -37,7 +38,5 @@ int			cor_live(t_env *env, int pc)
 	apply_livecheck(env, arg1);
 	env->arena->live_call++;
 	CUR_PROC->wait_time = 10;
-	if (DEBUG)
-		ft_printf("P%4d | live %d\n", CUR_PROC->id + 1, arg1);
 	return (pc);
 }

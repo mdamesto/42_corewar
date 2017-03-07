@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 16:54:36 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/03/06 16:36:11 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/07 16:32:20 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,8 +174,8 @@ void	process_turn(t_env *env)
 			}
 			env->arena->current_process--;
 		}
-		if (DISPLAY && env->arena->current_cycle >= 18000)
-			display(env->display, env);
+		//	if (DISPLAY && env->arena->current_cycle >= 18000)
+		display(env->display, env);
 		env->arena->current_cycle++;
 		env->arena->live_cycle++;
 		if (env->arena->live_cycle >= env->arena->cycle_to_die)
