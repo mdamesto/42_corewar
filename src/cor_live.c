@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/14 17:44:03 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/03/07 16:27:59 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/08 18:06:14 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,9 @@ static void	apply_livecheck(t_env *env, int arg1)
 	{
 		if (env->player_list[i]->number == arg1)
 		{
-			//		ft_printf("un processus dit que le joueur %d(%s) est en vie\n",
-			//					env->player_list[i]->number, env->player_list[i]->name);
+			if (!DISPLAY)
+				ft_printf("un processus dit que le joueur %d(%s) est en vie\n",
+						env->player_list[i]->number, env->player_list[i]->name);
 			env->player_list[i]->isalive = 1;
 		}
 		i++;

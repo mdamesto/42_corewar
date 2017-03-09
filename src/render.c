@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/06 17:02:22 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/03/06 17:04:27 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/09 16:36:34 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,104 +16,69 @@
 #define LINE(i) (i) / 64
 #define COL(i) ((i) % 64) * 3
 
-static void	my_init_color(void)
+static void	update_champion_live(t_env *env)
 {
-	start_color();
-	//CHMP_COLOR
-	init_pair(1, COLOR_BLUE, COLOR_WHITE);
-	init_pair(2, COLOR_GREEN, COLOR_WHITE);
-	init_pair(3, COLOR_YELLOW, COLOR_WHITE);
-	init_pair(4, COLOR_MAGENTA, COLOR_WHITE);
-	//PC on INVALID OP_CODE
-	init_pair(5, COLOR_WHITE, COLOR_BLUE);
-	init_pair(6, COLOR_WHITE, COLOR_GREEN);
-	init_pair(7, COLOR_WHITE, COLOR_YELLOW);
-	init_pair(8, COLOR_WHITE, COLOR_MAGENTA);
-	//PC on INVALID OP_CODE
-	init_pair(9, COLOR_RED, COLOR_BLUE);
-	init_pair(10, COLOR_RED, COLOR_GREEN);
-	init_pair(11, COLOR_RED, COLOR_YELLOW);
-	init_pair(12, COLOR_RED, COLOR_MAGENTA);
-	//COLOR OF UNUSED MEM
-	init_pair(13, COLOR_BLACK, COLOR_WHITE);
-}
-// ATT_ON AND ATT_OFF CAN BE ONE FCT (USING *FCT)  ----------------- TODO
-static void	att_on(t_env *env, t_display *display)
-{
-	if (display->ispc)
+	int i;
+	int j;
+
+	j = 0;
+	i = 0;
+	while (env->player_list[i])
 	{
-		if (display->value > 0 && display->value < 17)
-			wattron(env->w_main, COLOR_PAIR(display->champion + 4));
-		else
-			wattron(env->w_main, COLOR_PAIR(display->champion + 8));
+		if (env->player_list[i]->isalive == 1)
+			mvwprintw(env->w_menu, 14 + j, 16, "YES     ");
+		else if (env->player_list[i]->isalive == 0)
+			mvwprintw(env->w_menu, 14 + j, 16, "NO      ");
+		else if (env->player_list[i]->isalive == -1)
+			mvwprintw(env->w_menu, 14 + j, 16, "K.I.A   ");
+		i++;
+		j += 3;
 	}
-	else if (display->champion)
-		wattron(env->w_main, COLOR_PAIR(display->champion));
+}
+
+void		set_attributes(WINDOW *w_main, t_display *display)
+{
+	if (!display->champion)
+		wattron(w_main, COLOR_PAIR(255));
+	if (display->forked)
+		wattron(w_main, COLOR_PAIR(display->champion * 10 + 3));
+	else if (display->ispc && (display->value < 1 || display->value > 16))
+		wattron(w_main, COLOR_PAIR(display->champion * 10 + 2));
+	else if (display->ispc)
+		wattron(w_main, COLOR_PAIR(display->champion * 10 + 1));
+	else
+		wattron(w_main, COLOR_PAIR(display->champion * 10));
 	if (display->recent_display)
-		wattroff(env->w_main, A_BOLD);
+		wattron(w_main, A_BOLD);
+	else
+		wattroff(w_main, A_BOLD);
 }
 
-static void	att_off(t_env *env, t_display *display)
-{
-	if (display->ispc)
-	{
-		if (display->value > 0 && display->value < 17)
-			wattroff(env->w_main, COLOR_PAIR(display->champion + 4));
-		else
-			wattroff(env->w_main, COLOR_PAIR(display->champion + 8));
-	}
-	else if (display->champion)
-		wattroff(env->w_main, COLOR_PAIR(display->champion));
-	if (display->recent_display)
-	{
-		wattron(env->w_main, A_BOLD);
-		display->recent_display--;
-	}
-}
-
-void		init_display(t_env *env)
-{
-	WINDOW * main;
-	WINDOW * menu;
-	initscr();
-	//NCURSES OPTION/CONFIG
-	cbreak();
-	noecho();
-	scrollok(stdscr, TRUE);
-	//INIT COLOR AND SUBWINDOWS and STORE IN ENV
-	my_init_color();
-	main = subwin(stdscr, 64, 193, 1, 1);
-	menu = subwin(stdscr, 64, 40, 1, 196);
-	wbkgd(main, COLOR_PAIR(13));
-	wbkgd(menu, COLOR_PAIR(13));
-	env->w_main = main;
-	env->w_menu = menu;
-	wattron(env->w_main, A_BOLD);
-}
-
-void		display(t_display **display, t_env *env)
+void		display(t_env *env)
 {
 	const char	hex[] = "0123456789abcdef";
-	char		str[3];
 	int			i;
+	char		str[3];
 
 	str[2] = '\0';
 	i = -1;
-	while (++i < 4096)
+	while (++i != 4096)
 	{
-		att_on(env, display[i]);
-		str[0] = hex[display[i]->value / 16];
-		str[1] = hex[display[i]->value % 16];
-		mvwprintw(env->w_main, LINE(i), COL(i), str);
-		att_off(env, display[i]);
-		mvwprintw(env->w_main, LINE(i), COL(i) + 2, " ");
+		str[0] = hex[env->display[i]->value / 16];
+		str[1] = hex[env->display[i]->value % 16];
+		set_attributes(env->w_main, env->display[i]);
+		mvwprintw(env->w_main, LINE(i), COL(i), "%s", str);
+		if (env->display[i]->recent_display)
+			env->display[i]->recent_display--;
+		if (env->display[i]->forked)
+			env->display[i]->forked--;
 	}
+	mvwprintw(env->w_menu, 1, 27, "%d", env->arena->current_cycle);
+	mvwprintw(env->w_menu, 3, 27, "%d\t",
+			env->arena->cycle_to_die - env->arena->live_cycle - 1);
+	mvwprintw(env->w_menu, 5, 27, "%d\t", env->arena->cycle_to_die);
+	mvwprintw(env->w_menu, 8, 27, "%d", env->arena->process_amount);
+	update_champion_live(env);
+	wrefresh(env->w_menu);
 	wrefresh(env->w_main);
-}
-
-void		end_display(t_env *env)
-{
-	free(env->w_main);
-	free(env->w_menu);
-	endwin();
 }

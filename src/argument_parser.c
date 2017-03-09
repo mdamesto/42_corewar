@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/07 17:42:28 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/03/07 17:43:27 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/09 17:18:17 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,15 +23,16 @@ static int	get_dump(int ac, char **av)
 	dump_value = ft_atoi(av[2]);
 	if (dump_value < 0)
 		return (-1);
-	ft_printf("DUMP OK\n");
 	return (dump_value);
 }
 
-static int	dump_arg_check(int *i, int ac, char **av)
+static int	dump_arg_check(int *i, int ac, char **av, t_env *env)
 {
+	if (!ft_strcmp("-dump", av[1]) && DISPLAY)
+		return (0);
 	if (ac >= 3 && !ft_strcmp("-dump", av[1]))
 	{
-		if (get_dump(ac, av) == -1)
+		if ((env->dump = get_dump(ac, av)) == -1)
 			return (0);
 		*i += 2;
 	}
@@ -84,7 +85,7 @@ int			arg_parser(int ac, char **av, t_env *env)
 	i = 1;
 	j = 0;
 	k = 0;
-	if (!dump_arg_check(&i, ac, av))
+	if (!dump_arg_check(&i, ac, av, env))
 		return (-1);
 	while (i != ac)
 	{

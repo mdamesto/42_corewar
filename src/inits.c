@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/10 17:15:11 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/03/06 16:37:57 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/09 17:14:15 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ t_env		*env_init(void)
 		i++;
 	}
 	env->process_list = ft_memalloc(sizeof(t_process *) * (MAX_PLAYERS + 1));
+	env->dump = -1;
 	return (env);
 }
 

@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 18:54:15 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/03/07 17:46:56 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/09 17:25:10 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@
 # define ZONE env->arena->zone
 # define DISPLAY 1
 # define MODFIX(x, y) (((x) % (y)) < 0) ? ((x) % (y)) + (y) : (x) % (y)
-# define DEBUG 0
 
 typedef struct	s_process
 {
@@ -64,6 +63,7 @@ typedef struct	s_display
 	short			champion;
 	short			recent_display;
 	short			ispc;
+	int				forked;
 }				t_display;
 
 typedef struct	s_env
@@ -72,6 +72,7 @@ typedef struct	s_env
 	t_process	**process_list;
 	t_arena		*arena;
 	t_display	**display;
+	int			dump;
 
 	WINDOW		*w_main;
 	WINDOW		*w_menu;
@@ -83,6 +84,8 @@ t_arena			*arena_init();
 t_env			*env_init();
 t_display		*display_init();
 
+void			init_display(t_env *env);
+
 int				arg_parser(int ac, char **av, t_env *env);
 t_player		*file_parser(int fd);
 
@@ -90,6 +93,15 @@ int				get_direct(unsigned char *zone, int pc);
 int				get_indirect(unsigned char *zone, int pc, int refpc);
 short			get_direct_short(unsigned char *zone, int pc);
 int				get_indirect_idx(unsigned char *zone, int pc, int refpc);
+
+int				operation(t_env *env, int opcode, int param, int pc);
+
+void			live_check(t_env *env);
+
+void			end_cycle(t_env *env);
+void			process_turn(t_env *env);
+
+void			free_memory(t_env *env);
 
 int				cor_live(t_env *env, int pc);
 int				cor_ld(t_env *env, int param, int pc);
@@ -111,7 +123,7 @@ int				cor_aff(t_env *env, int param, int pc);
 int				swap_bytes(int arg);
 
 void			init_display(t_env *env);
-void			display(t_display **display, t_env *env);
+void			display(t_env *env);
 void			end_display(t_env *env);
 
 #endif

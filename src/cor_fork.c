@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/14 19:56:32 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/03/07 16:04:13 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/09 16:28:14 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ int					cor_fork(t_env *env, int pc)
 	env->arena->process_amount++;
 	env->process_list[env->arena->process_amount] = NULL;
 	env->display[MODFIX(CUR_PROC->pc + (arg1 % IDX_MOD), MEM_SIZE)]->ispc = 1;
+	env->display[MODFIX(CUR_PROC->pc + (arg1 % IDX_MOD), MEM_SIZE)]->forked =
+																		799;
 	CUR_PROC->wait_time = 799;
 	return (pc);
 }

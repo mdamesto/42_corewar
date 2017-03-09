@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/14 20:23:10 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/03/07 16:11:11 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/09 16:22:57 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,15 @@
 
 static int	get_variable_1(int param, int *pc, t_env *env, int *arg1)
 {
-	if (((param & 192) >> 6) == DIR_CODE)
+	if (((param & 192) >> 6) == REG_CODE)
 	{
 		if (ZONE[*pc] - 1 < 0 || ZONE[*pc] - 1 >= REG_NUMBER)
+		{
 			return (1);
+		}
 		else
 		{
-			*arg1 = CUR_PROC->reg[ZONE[*pc] - 1];
+			*arg1 = swap_bytes(CUR_PROC->reg[ZONE[*pc] - 1]);
 			*pc = (*pc + 1) % MEM_SIZE;
 		}
 	}
@@ -43,6 +45,7 @@ int			cor_aff(t_env *env, int param, int pc)
 	if (kill_op)
 		return (pc);
 	buf = MODFIX(arg1 % 256, 256);
-	write(1, &buf, 1);
+	if (!DISPLAY)
+		write(1, &buf, 1);
 	return (pc);
 }
