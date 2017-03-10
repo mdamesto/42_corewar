@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 16:54:36 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/03/09 17:52:45 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/10 18:55:09 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,13 +68,13 @@ int			main(int argc, char **argv)
 	}
 	j = arg_parser(argc, argv, env);
 	if (j == -1)
-		ft_printf("dump error");
+		ft_printf("dump error\n");
 	else if (j == -2)
-		ft_printf("-n error");
+		ft_printf("-n error\n");
 	else if (j == -3)
-		ft_printf("file error");
+		ft_printf("file error\n");
 	else if (j == -4)
-		ft_printf("too much players");
+		ft_printf("too much players\n");
 	if (j != 1)
 		return (1);
 	inject_players(env);

@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/06 17:02:22 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/03/09 16:36:34 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/10 18:45:24 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,20 +38,52 @@ static void	update_champion_live(t_env *env)
 
 void		set_attributes(WINDOW *w_main, t_display *display)
 {
+	int attributes;
+
 	if (!display->champion)
 		wattron(w_main, COLOR_PAIR(255));
-	if (display->forked)
-		wattron(w_main, COLOR_PAIR(display->champion * 10 + 3));
+	if (display->forked && !display->champion)
+		attributes = COLOR_PAIR(255);
+	else if (display->forked)
+		attributes = COLOR_PAIR(display->champion * 10 + 3);
 	else if (display->ispc && (display->value < 1 || display->value > 16))
-		wattron(w_main, COLOR_PAIR(display->champion * 10 + 2));
+		attributes = COLOR_PAIR(display->champion * 10 + 2);
 	else if (display->ispc)
-		wattron(w_main, COLOR_PAIR(display->champion * 10 + 1));
+		attributes = COLOR_PAIR(display->champion * 10 + 1);
 	else
-		wattron(w_main, COLOR_PAIR(display->champion * 10));
+		attributes = COLOR_PAIR(display->champion * 10);
 	if (display->recent_display)
-		wattron(w_main, A_BOLD);
+		attributes |= A_BOLD;
 	else
 		wattroff(w_main, A_BOLD);
+	wattron(w_main, attributes);
+}
+
+static void	update_recent_display(t_env *env, int i)
+{
+	env->display[i]->update = 0;
+	if (env->display[i]->recent_display)
+	{
+		env->display[i]->recent_display--;
+		if (!env->display[i]->recent_display)
+			env->display[i]->update = 1;
+	}
+	if (env->display[i]->forked)
+	{
+		env->display[i]->forked--;
+		if (!env->display[i]->forked)
+			env->display[i]->update = 1;
+	}
+}
+
+static void	print_menu(t_env *env)
+{
+	mvwprintw(env->w_menu, 1, 27, "%d", env->arena->current_cycle);
+	mvwprintw(env->w_menu, 3, 27, "%d\t",
+			env->arena->cycle_to_die - env->arena->live_cycle - 1);
+	mvwprintw(env->w_menu, 5, 27, "%d\t", env->arena->cycle_to_die);
+	mvwprintw(env->w_menu, 8, 27, "%d", env->arena->process_amount);
+	update_champion_live(env);
 }
 
 void		display(t_env *env)
@@ -64,21 +96,17 @@ void		display(t_env *env)
 	i = -1;
 	while (++i != 4096)
 	{
-		str[0] = hex[env->display[i]->value / 16];
-		str[1] = hex[env->display[i]->value % 16];
-		set_attributes(env->w_main, env->display[i]);
-		mvwprintw(env->w_main, LINE(i), COL(i), "%s", str);
-		if (env->display[i]->recent_display)
-			env->display[i]->recent_display--;
-		if (env->display[i]->forked)
-			env->display[i]->forked--;
+		if (env->display[i]->update)
+		{
+			str[0] = hex[env->display[i]->value / 16];
+			str[1] = hex[env->display[i]->value % 16];
+			if (!FASTDISPLAY)
+				set_attributes(env->w_main, env->display[i]);
+			mvwprintw(env->w_main, LINE(i), COL(i), "%s", str);
+		}
+		update_recent_display(env, i);
 	}
-	mvwprintw(env->w_menu, 1, 27, "%d", env->arena->current_cycle);
-	mvwprintw(env->w_menu, 3, 27, "%d\t",
-			env->arena->cycle_to_die - env->arena->live_cycle - 1);
-	mvwprintw(env->w_menu, 5, 27, "%d\t", env->arena->cycle_to_die);
-	mvwprintw(env->w_menu, 8, 27, "%d", env->arena->process_amount);
-	update_champion_live(env);
+	print_menu(env);
 	wrefresh(env->w_menu);
 	wrefresh(env->w_main);
 }

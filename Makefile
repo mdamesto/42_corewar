@@ -6,7 +6,7 @@
 #    By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/05/20 13:50:50 by jde-maga          #+#    #+#              #
-#    Updated: 2017/03/09 16:32:54 by jde-maga         ###   ########.fr        #
+#    Updated: 2017/03/10 18:50:31 by jde-maga         ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -15,7 +15,7 @@ SRC_NAME = main.c inits.c file_parser.c get_variables.c cor_live.c cor_ld.c cor_
 OBJ_PATH = obj/
 OBJ_NAME = $(SRC_NAME:.c=.o)
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -g -I./includes
+CFLAGS = -Wall -Wextra -Werror -I./includes
 NAME = corewar
 SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))
 OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))

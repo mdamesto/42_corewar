@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/08 16:43:50 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/03/09 17:29:42 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/10 18:54:28 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ static void	hexa_dump(t_env *env)
 
 void		end_cycle(t_env *env)
 {
+	if (env->arena->current_cycle == env->dump)
+		hexa_dump(env);
 	if (DISPLAY)
 		display(env);
 	env->arena->current_cycle++;
@@ -51,8 +53,6 @@ void		end_cycle(t_env *env)
 		if (env->arena->cycle_to_die < 0)
 			env->arena->cycle_to_die = 0;
 	}
-	if (env->arena->current_cycle == env->dump)
-		hexa_dump(env);
 }
 
 static void	play_turn(t_env *env)
@@ -72,8 +72,10 @@ static void	play_turn(t_env *env)
 		pc = (pc + 1) % MEM_SIZE;
 	}
 	env->display[CUR_PROC->pc]->ispc = 0;
+	env->display[CUR_PROC->pc]->update = 1;
 	CUR_PROC->pc = operation(env, opcode, param, pc);
 	env->display[CUR_PROC->pc]->ispc = 1;
+	env->display[CUR_PROC->pc]->update = 1;
 }
 
 void		process_turn(t_env *env)

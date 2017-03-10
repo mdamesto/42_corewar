@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/10 17:15:11 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/03/09 17:14:15 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/10 17:55:47 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,5 +91,6 @@ t_display	*display_init(void)
 	display->champion = 0;
 	display->recent_display = 0;
 	display->ispc = 0;
+	display->update = 1;
 	return (display);
 }

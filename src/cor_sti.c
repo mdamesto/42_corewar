@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/14 19:34:37 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/03/07 16:46:57 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/10 18:42:49 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,10 @@ static void	apply_sti_zone(t_env *env, int arg1, int arg2, int arg3)
 	env->display[(pos + 1) % MEM_SIZE]->recent_display = 10;
 	env->display[(pos + 2) % MEM_SIZE]->recent_display = 10;
 	env->display[(pos + 3) % MEM_SIZE]->recent_display = 10;
+	env->display[pos % MEM_SIZE]->update = 1;
+	env->display[(pos + 1) % MEM_SIZE]->update = 1;
+	env->display[(pos + 2) % MEM_SIZE]->update = 1;
+	env->display[(pos + 3) % MEM_SIZE]->update = 1;
 }
 
 static int	get_variable_1(int param, int *pc, t_env *env, int *arg1)

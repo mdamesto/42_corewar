@@ -6,7 +6,7 @@
 /*   By: jde-maga <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 18:54:15 by jde-maga          #+#    #+#             */
-/*   Updated: 2017/03/09 17:25:10 by jde-maga         ###   ########.fr       */
+/*   Updated: 2017/03/10 18:50:25 by jde-maga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@
 
 # define CUR_PROC env->process_list[env->arena->current_process]
 # define ZONE env->arena->zone
-# define DISPLAY 1
+# define DISPLAY 0
+# define FASTDISPLAY 0
 # define MODFIX(x, y) (((x) % (y)) < 0) ? ((x) % (y)) + (y) : (x) % (y)
 
 typedef struct	s_process
@@ -64,6 +65,7 @@ typedef struct	s_display
 	short			recent_display;
 	short			ispc;
 	int				forked;
+	short			update;
 }				t_display;
 
 typedef struct	s_env
@@ -102,6 +104,8 @@ void			end_cycle(t_env *env);
 void			process_turn(t_env *env);
 
 void			free_memory(t_env *env);
+
+int				forkcount(void);
 
 int				cor_live(t_env *env, int pc);
 int				cor_ld(t_env *env, int param, int pc);
